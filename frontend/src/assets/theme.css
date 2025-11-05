@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-deep: #020617;
+  --color-bg-sky: #0f172a;
+  --color-fg-light: #e2e8f0;
+
+  --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
