@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Background from "../components/Background";
 import { Link } from "react-router-dom";
+import BackToHomeButton from "../components/BackToHomeButton";
 
 function Login() {
     const [form, setForm] = useState({
@@ -28,6 +29,7 @@ function Login() {
 
     return (
     <div className="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
+      <BackToHomeButton />
       <Background />
       <form onSubmit={handleSubmit} className="form-card">
         <h1>Login</h1>

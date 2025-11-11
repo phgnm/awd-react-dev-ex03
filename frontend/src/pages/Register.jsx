@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useRegister } from "../hooks/useRegister";
 import Background from "../components/Background";
 import { Link } from "react-router-dom";
+import BackToHomeButton from "../components/BackToHomeButton";
 
 function Register() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -11,6 +12,7 @@ function Register() {
 
     return(
         <div className="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
+            <BackToHomeButton />
             <Background />
             <form onSubmit={handleSubmit(onSubmit)} className="form-card">
                 <h1>Register</h1>
