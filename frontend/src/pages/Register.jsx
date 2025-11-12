@@ -1,12 +1,23 @@
 import { useForm } from "react-hook-form";
 import { useRegister } from "../hooks/useRegister";
 import Background from "../components/Background";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BackToHomeButton from "../components/BackToHomeButton";
+import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
 function Register() {
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
+
     const { register, handleSubmit, formState: { errors } } = useForm();
     const { mutate, isPending, isSuccess, isError, error } = useRegister();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/account');
+        }
+    }, [isAuthenticated, navigate]);
 
     const onSubmit = (data) => mutate(data);
 
@@ -18,18 +29,18 @@ function Register() {
                 <h1>Register</h1>
 
                 <input
-                {...register("email", { required: "Email is required" })}
-                type="email"
-                placeholder="Email"
-                className="input-field"
+                    {...register("email", { required: "Email is required" })}
+                    type="email"
+                    placeholder="Email"
+                    className="input-field"
                 />
                 {errors.email && <p className="error-text">{errors.email.message}</p>}
 
                 <input
-                {...register("password", { required: "Password is required" })}
-                type="password"
-                placeholder="Password"
-                className="input-field"
+                    {...register("password", { required: "Password is required" })}
+                    type="password"
+                    placeholder="Password"
+                    className="input-field"
                 />
                 {errors.password && <p className="error-text">{errors.password.message}</p>}
 

@@ -1,63 +1,72 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Background from "../components/Background";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import BackToHomeButton from "../components/BackToHomeButton";
+import { useForm } from "react-hook-form";
+import { useLogin } from "../hooks/useLogin";
+import { useAuth } from "../context/AuthContext";
 
 function Login() {
-    const [form, setForm] = useState({
-        email: "",
-        password: ""
-    });
-    const [status, setStatus] = useState(null);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { isAuthenticated } = useAuth();
 
-    const handleChange = (e) =>
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const from = location.state?.from?.pathName || '/account';
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (form.email && form.password)
-            setStatus({
-                type: "success",
-                msg: "Login simulated successfully"
-            });
-        else
-            setStatus({
-                type: "error",
-                msg: "Please fill all fields"
-            });
-    }
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm();
+
+    const { mutate, isPending, isError, error: loginError } = useLogin();
+
+    useEffect(() => {
+      if (isAuthenticated) {
+        navigate(from, { replace: true});
+      }
+    }, [isAuthenticated, navigate, from]);
+
+    const onSubmit = (data) => {
+      mutate(data);
+    };
 
     return (
     <div className="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
       <BackToHomeButton />
       <Background />
-      <form onSubmit={handleSubmit} className="form-card">
+      <form onSubmit={handleSubmit(onSubmit)} className="form-card">
         <h1>Login</h1>
 
         <input
-          name="email"
+          {...register('email', { required: 'Email is required' })}
           type="email"
           placeholder="Email"
           className="input-field"
-          value={form.email}
-          onChange={handleChange}
         />
+        {errors.email && (
+          <p className="message-error -mt-2 mb-2">{errors.email.message}</p>
+        )}
+
         <input
-          name="password"
+          {...register('password', { required: 'Password is required' })}
           type="password"
           placeholder="Password"
           className="input-field"
-          value={form.password}
-          onChange={handleChange}
         />
-
-        <button type="submit" className="btn-primary">Login</button>
-
-        {status && (
-          <p className={status.type === "success" ? "success-text" : "error-text"}>
-            {status.msg}
-          </p>
+        {errors.password && (
+          <p className="message-error -mt-2 mb-2">{errors.password.message}</p>
         )}
+
+        <button 
+          type="submit" 
+          className="btn-primary w-full"
+          disabled={isPending}
+        >
+          {isPending ? 'Logging in...' : 'Login'}
+        </button>
+
+        {isError && <p className="message-error">{loginError.message}</p>}
 
         <p className="mt-4 text-sm">
           Don’t have an account?{" "}
